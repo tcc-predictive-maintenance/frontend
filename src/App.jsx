@@ -1,22 +1,42 @@
 import './App.css'
 import {useState} from "react";
 
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+
+
 function App() {
 
   const [loading, setLoading] = useState(false)
-  const [predict, setPredict] = useState({})
+  const [predict, setPredict] = useState({
+    "Sem falha": 0,
+    "Falha de energia": 0,
+    "Falha de desgaste da ferramenta": 0,
+    "Falha por excesso de trabalho": 0,
+    "Falhas diversas": 0,
+    "Falha de dissipação de calor": 0,
+  })
+
+  const MAP_RESPONSE = {
+    0: "Sem falha",
+    1: "Falha de energia",
+    2: "Falha de desgaste da ferramenta",
+    3: "Falha por excesso de trabalho",
+    4: "Falhas diversas",
+    5: "Falha de dissipação de calor",
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
 
     const formData = new FormData(event.target)
     const data = {
-      type: formData.get('type'),
-      air_temperature: parseFloat(formData.get('air_temperature')),
-      process_temperature: parseFloat(formData.get('process_temperature')),
-      rotational_speed: parseFloat(formData.get('rotational_speed')),
-      torque: parseFloat(formData.get('torque')),
-      tool_wear: parseFloat(formData.get('tool_wear')),
+      type: formData.get('type').toString(),
+      air_temperature: parseFloat(formData.get('air_temperature').toString()),
+      process_temperature: parseFloat(formData.get('process_temperature').toString()),
+      rotational_speed: parseFloat(formData.get('rotational_speed').toString()),
+      torque: parseFloat(formData.get('torque').toString()),
+      tool_wear: parseFloat(formData.get('tool_wear').toString()),
       target: 1.0,
     }
 
@@ -28,15 +48,21 @@ function App() {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
-        })
+    })
 
     setLoading(false)
 
     if (response.ok) {
         const result = await response.json()
-        setPredict(result)
+        const predict = result[0].reduce((acc, value, index) => {
+            acc[MAP_RESPONSE[index]] = value
+            return acc
+        }, {})
+        setPredict(predict)
     }
   }
+
+  console.log(predict)
 
   return (
     <>
@@ -72,8 +98,8 @@ function App() {
         <button type="submit">Submit</button>
       </form>
 
-      {loading && <p>Loading...</p>}
-      {!loading && predict && <p>{predict}</p>}
+      {loading && <p>Carregando...</p>}
+      {!loading && predict && <p>{JSON.stringify(predict)}</p>}
     </>
   )
 }
