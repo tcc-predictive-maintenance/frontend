@@ -67,7 +67,7 @@ function App() {
 
   return (
     <Card title={"Predição de falhas em máquinas de fresagem"} style={{display: "flex", flexDirection: "row", gap: "1rem"}}>
-        <form title={"Parâmetros da máquina"} style={{display: "flex", flexDirection: "column", gap: "1rem"}}>
+        <form title={"Parâmetros da máquina"}>
             <label>
                 Qualidade da máquina:
                 <SelectButton
