@@ -5,6 +5,7 @@ import {SelectButton} from "primereact/selectbutton";
 import {InputNumber} from "primereact/inputnumber";
 import {MappingMachineProblemCode} from "./constants/MappingMachineProblemCode.ts";
 import {Card} from "primereact/card";
+import { Chart } from 'primereact/chart';
 
 function App() {
 
@@ -84,7 +85,10 @@ function App() {
                 Temperatura do ar (°C):
                 <InputNumber
                     value={machineDescription.air_temperature}
-                    onValueChange={(e) => setMachineDescription({...machineDescription, air_temperature: e.value})}
+                    onValueChange={(e) => {
+                        e.preventDefault()
+                        setMachineDescription({...machineDescription, air_temperature: e.value})
+                    }}
                     mode={"decimal"}
                     min={23.15}
                     max={32.35}
@@ -142,8 +146,23 @@ function App() {
             </label>
         </form>
         <div>
-            <div>{!loading && predict && <p>{JSON.stringify(predict)}</p>}</div>
-            <div>Chart</div>
+            <Chart  type="bar" data={{
+                labels: Object.keys(predict),
+                datasets: [
+                    {
+                        label: 'Probabilidade de falha',
+                        data: Object.values(predict),
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56'
+                        ]
+                    }
+                ]
+            }}/>
         </div>
 
     </Card>
