@@ -54,7 +54,9 @@ function App() {
 
             if (response.ok) {
                 response.json().then((result) => {
-                    const predict = result[0].reduce((acc, value, index) => {
+                    const flattenedResult = JSON.parse(result).flat();
+
+                    const predict = flattenedResult.reduce((acc, value, index) => {
                         acc[MappingMachineProblemCode[index]] = value
                         return acc
                     }, {})
