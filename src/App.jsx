@@ -40,7 +40,7 @@ function App() {
   useEffect(() => {
 
     const getPredict = async (data) => {
-        return await fetch('http://127.0.0.1:8000/predict', {
+        return await fetch(`http://${import.meta.env.VITE_SERVER_URL || '127.0.0.1:8000'}/predict`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
