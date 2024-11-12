@@ -37,9 +37,6 @@ function App() {
       return Object.values(machineDescription).every((value) => value !== null)
   }, [machineDescription])
 
-    console.log(machineDescription)
-    console.log(completedForm)
-
   useEffect(() => {
 
     const getPredict = async (data) => {
