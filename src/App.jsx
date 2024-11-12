@@ -108,6 +108,7 @@ function App() {
                     max={32.35}
                     step={0.5}
                     showButtons
+                    style={{flex: 1, width: "100%"}}
                 />
             </Row>
             <Row>
