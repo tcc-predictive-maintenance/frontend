@@ -5,7 +5,9 @@ import {SelectButton} from "primereact/selectbutton";
 import {InputNumber} from "primereact/inputnumber";
 import {MappingMachineProblemCode} from "./constants/MappingMachineProblemCode.ts";
 import {Card} from "primereact/card";
-import { Chart } from 'primereact/chart';
+import {Chart} from 'primereact/chart';
+import {Divider} from 'primereact/divider';
+import {Row} from "./style.jsx";
 
 function App() {
 
@@ -32,8 +34,11 @@ function App() {
   })
 
   const completedForm = useMemo(() => {
-    return Object.values(machineDescription).every(value => value !== null)
+      return Object.values(machineDescription).every((value) => value !== null)
   }, [machineDescription])
+
+    console.log(machineDescription)
+    console.log(completedForm)
 
   useEffect(() => {
 
@@ -65,14 +70,21 @@ function App() {
             }
         })
     }
-  }, [machineDescription]);
+  }, [completedForm, machineDescription]);
 
 
   return (
-    <Card title={"Predição de falhas em máquinas de fresagem"} style={{display: "flex", flexDirection: "row", gap: "1rem"}}>
+      <Card title={"Predição de falhas em máquinas de fresagem"} style={{
+          display: "flex",
+          gap: "1rem",
+          alignSelf: "center",
+          padding: "1rem",
+          maxWidth: "50rem",
+          margin: "2rem auto"
+      }}>
         <form title={"Parâmetros da máquina"}>
-            <label>
-                Qualidade da máquina:
+            <Row>
+                <label style={{flex: 1, marginRight: "1rem"}}>Qualidade da máquina:</label>
                 <SelectButton
                     value={machineDescription.type}
                     onChange={(e) => setMachineDescription({...machineDescription, type: e.value})}
@@ -82,9 +94,12 @@ function App() {
                         {label: 'Média', value: 'M'},
                         {label: 'Alta', value: 'H'}
                     ]}/>
-            </label>
-            <label>
-                Temperatura do ar (°C):
+            </Row>
+            <Row>
+                <div style={{display: "flex", flexDirection: "column"}}>
+                    <label style={{flex: 1, marginRight: "1rem"}}>Temperatura do ar (°C):</label>
+                    <sub style={{display: "flex", alignItems: "center"}}>23.15°C - 32.35°C</sub>
+                </div>
                 <InputNumber
                     value={machineDescription.air_temperature}
                     onValueChange={(e) => {
@@ -97,9 +112,13 @@ function App() {
                     step={0.5}
                     showButtons
                 />
-            </label>
-            <label>
-                Temperatura do processo (°C):
+            </Row>
+            <Row>
+                <div style={{display: "flex", flexDirection: "column"}}>
+                    <label style={{flex: 1, marginRight: "1rem", width: "max-content"}}>Temperatura do processo
+                        (°C):</label>
+                    <sub style={{display: "flex", alignItems: "center"}}>33.5°C - 41.65°C</sub>
+                </div>
                 <InputNumber
                     value={machineDescription.process_temperature}
                     onValueChange={(e) => setMachineDescription({...machineDescription, process_temperature: e.value})}
@@ -108,10 +127,14 @@ function App() {
                     max={41.65}
                     step={0.5}
                     showButtons
+                    style={{flex: 1, width: "100%"}}
                 />
-            </label>
-            <label>
-                Velocidade de rotação (rpm):
+            </Row>
+            <Row>
+                <div style={{display: "flex", flexDirection: "column"}}>
+                    <label style={{flex: 1, marginRight: "1rem"}}>Velocidade de rotação (rpm):</label>
+                    <sub style={{display: "flex", alignItems: "center"}}>1168rpm - 2886rpm</sub>
+                </div>
                 <InputNumber
                     value={machineDescription.rotational_speed}
                     onValueChange={(e) => setMachineDescription({...machineDescription, rotational_speed: e.value})}
@@ -120,10 +143,14 @@ function App() {
                     max={2886}
                     step={1}
                     showButtons
+                    style={{flex: 1, width: "100%"}}
                 />
-            </label>
-            <label>
-                Torque (Nm):
+            </Row>
+            <Row>
+                <div style={{display: "flex", flexDirection: "column"}}>
+                    <label style={{flex: 1, marginRight: "1rem"}}>Torque (Nm):</label>
+                    <sub style={{display: "flex", alignItems: "center"}}>3.8Nm - 76.6Nm</sub>
+                </div>
                 <InputNumber
                     value={machineDescription.torque}
                     onValueChange={(e) => setMachineDescription({...machineDescription, torque: e.value})}
@@ -132,10 +159,14 @@ function App() {
                     max={76.6}
                     step={0.1}
                     showButtons
+                    style={{flex: 1, width: "100%"}}
                 />
-            </label>
-            <label>
-                Desgaste da ferramenta (min):
+            </Row>
+            <Row>
+                <div style={{display: "flex", flexDirection: "column"}}>
+                    <label style={{flex: 1, marginRight: "1rem"}}>Desgaste da ferramenta (mm):</label>
+                    <sub style={{display: "flex", alignItems: "center"}}>0mm - 253mm</sub>
+                </div>
                 <InputNumber
                     value={machineDescription.tool_wear}
                     onValueChange={(e) => setMachineDescription({...machineDescription, tool_wear: e.value})}
@@ -144,29 +175,85 @@ function App() {
                     max={253}
                     step={1}
                     showButtons
+                    style={{flex: 1, width: "100%"}}
                 />
-            </label>
+            </Row>
         </form>
+
+          <Divider orientation="vertical" flexItem/>
+
         <div>
-            <Chart  type="bar" data={{
-                labels: Object.keys(predict),
-                datasets: [
-                    {
-                        label: 'Probabilidade de falha',
-                        data: Object.values(predict),
-                        backgroundColor: [
-                            '#FF6384',
-                            '#36A2EB',
-                            '#FFCE56',
-                            '#FF6384',
-                            '#36A2EB',
-                            '#FFCE56'
-                        ]
-                    }
-                ]
-            }}/>
+            <h3>Resultados</h3>
         </div>
 
+          {!completedForm ? <span>Preencha todos os campos para obter a predição</span> : ""}
+
+          {completedForm &&
+              (loading ? "Carregando..." :
+                      <>
+                          <div style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "flex-start",
+                              gap: "0.5rem"
+                          }}>
+                              <span><b>Maior probabilidade de falha:</b> {Object.keys(predict).reduce((a, b) => predict[a] > predict[b] ? a : b)}</span>
+                              <span><b>Probabilidade do evento:</b> {(Object.values(predict).reduce((a, b) => a > b ? a : b) * 100).toFixed()}%</span>
+                          </div>
+
+                          <Divider type="dashed"/>
+                          <div>
+                              <Chart type="bar" data={{
+                                  labels: Object.keys(predict),
+                                  datasets: [
+                                      {
+                                          label: 'Probabilidade de falha',
+                                          data: Object.values(predict),
+                                          backgroundColor: [
+                                              '#FF6384',
+                                              '#36A2EB',
+                                              '#FFCE56',
+                                              '#FF6384',
+                                              '#36A2EB',
+                                              '#FFCE56'
+                                          ]
+                                      }
+                                  ]
+                              }}
+                                     options={{
+                                         indexAxis: 'x',
+                                         responsive: true,
+                                         maintainAspectRatio: true,
+                                         scales: {
+                                             x: {
+                                                 beginAtZero: true
+                                             },
+                                         },
+                                         plugins: {
+                                             legend: {
+                                                 display: false
+                                             },
+                                             tooltip: {
+                                                 callbacks: {
+                                                     label: function (context) {
+                                                         var label = context.dataset.label || '';
+
+                                                         if (label) {
+                                                             label += ': ';
+                                                         }
+                                                         if (context.parsed.y !== null) {
+                                                             label += context.parsed.y + '%';
+                                                         }
+                                                         return label;
+                                                     }
+                                                 }
+                                             }
+                                         },
+                                     }}
+                              />
+                          </div>
+                      </>
+              )}
     </Card>
   )
 }
