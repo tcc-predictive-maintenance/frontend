@@ -221,10 +221,22 @@ function App() {
                                      options={{
                                          indexAxis: 'x',
                                          responsive: true,
-                                         maintainAspectRatio: true,
+                                         maintainAspectRatio: window.innerWidth > 600,
                                          scales: {
                                              x: {
-                                                 beginAtZero: true
+                                                 beginAtZero: true,
+                                                 ticks: {
+                                                     font: {
+                                                         size: window.innerWidth < 600 ? 10 : 12,  // Smaller font on smaller screens
+                                                     },
+                                                 },
+                                             },
+                                             y: {
+                                                 ticks: {
+                                                     font: {
+                                                         size: window.innerWidth < 600 ? 10 : 12,  // Smaller font on smaller screens
+                                                     },
+                                                 },
                                              },
                                          },
                                          plugins: {
@@ -240,7 +252,7 @@ function App() {
                                                              label += ': ';
                                                          }
                                                          if (context.parsed.y !== null) {
-                                                             label += context.parsed.y + '%';
+                                                             label += (context.parsed.y * 100).toFixed() + '%';
                                                          }
                                                          return label;
                                                      }
