@@ -77,7 +77,8 @@ function App() {
           alignSelf: "center",
           padding: "1rem",
           maxWidth: "50rem",
-          margin: "2rem auto"
+          minWidth: "fit-content",
+          margin: window.innerWidth < 600 ? "auto" : "2rem auto"
       }}>
         <form title={"Parâmetros da máquina"}>
             <Row>
